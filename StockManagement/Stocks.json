@@ -1,0 +1,24 @@
+{
+  "stockList": [
+    {
+      "name": "Burger King",
+      "volume": 40,
+      "price": 1700
+    },
+    {
+      "name": "Lenovo",
+      "volume": 36,
+      "price": 1400
+    },
+    {
+      "name": "Reliance",
+      "volume": 60,
+      "price": 2700
+    },
+    {
+      "name": "Diwakar",
+      "volume": 60,
+      "price": 5700
+    }
+  ]
+}
