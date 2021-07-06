@@ -12,22 +12,39 @@ namespace StockManagement
         {
             StockManager sm = new StockManager();
             Console.WriteLine("****************Welcome to Stock Management Program!!!****************");
-            string jsonFilePath = @"C:\Users\NARD'S IDEAPAD\source\repos\StockManagement\StockManagement\Stocks.json";
-            StocksUtility utility = JsonConvert.DeserializeObject<StocksUtility>(File.ReadAllText(jsonFilePath));
+
+            string jsonFilePathOfStocks = @"C:\Users\NARD'S IDEAPAD\source\repos\StockManagement\StockManagement\Stocks.json";
+            StocksUtility utilityOfStockList = JsonConvert.DeserializeObject<StocksUtility>(File.ReadAllText(jsonFilePathOfStocks));
+
+            //*************************************************************************************************************************
             Console.WriteLine("******MENU*******");
-            Console.WriteLine("1.Display Stocks \n2.Calculate value of each stock \n3.Calculate Total value of stocks\n4.Exit\nEnter an Option");
+
+            Console.WriteLine("1.Display Stocks \n2.Calculate value of each stock \n3.Calculate Total value of stocks\n4.Buy Stocks\n5.Sell Stocks\n6.Print Report\n7.Exit\nEnter an Option");
             switch (Convert.ToInt32(Console.ReadLine()))
             {
                 case 1:
-                    sm.DisplayStocks(utility.stockList);
+                    sm.DisplayStocks(utilityOfStockList.stockList);
+                    sm.DisplayStocks(utilityOfStockList.userStockList);
                     break;
                 case 2:
-                    sm.CalculateValueOfEachStock(utility.stockList);
+                    sm.CalculateValueOfEachStock(utilityOfStockList.stockList);
                     break;
                 case 3:
-                    sm.CalculateValueOfAllStocks(utility.stockList);
+                    sm.CalculateValueOfAllStocks(utilityOfStockList.stockList);
                     break;
                 case 4:
+                    Console.WriteLine("***********Buy Stocks*************");
+                    sm.BuyStocks(jsonFilePathOfStocks);
+                    break;
+                case 5:
+                    Console.WriteLine("**********Sell Stocks************");
+                    sm.SellStocks(jsonFilePathOfStocks);
+                    break;
+                case 6:
+                    Console.WriteLine("********Print Report*************");
+                    sm.CalculateValueOfAllStocks(utilityOfStockList.stockList);
+                    break;
+                case 7:
                     Console.WriteLine("Exited");
                     break;
             }

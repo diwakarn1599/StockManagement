@@ -1,5 +1,6 @@
 {
   "stockList": [
+    
     {
       "name": "Burger King",
       "volume": 40,
@@ -17,7 +18,19 @@
     },
     {
       "name": "Diwakar",
-      "volume": 60,
+      "volume": 31,
+      "price": 5700
+    }
+  ],
+  "userStockList": [
+    {
+      "name": "xyz",
+      "volume": 10,
+      "price": 1200
+    },
+    {
+      "name": "Diwakar",
+      "volume": 2,
       "price": 5700
     }
   ]
