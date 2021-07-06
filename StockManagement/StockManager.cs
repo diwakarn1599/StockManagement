@@ -16,6 +16,7 @@ namespace StockManagement
         /// <param name="stockList"></param>
 
         private static LinkedList<string> transactionsDone = new LinkedList<string>();
+        private static LinkedList<string> transactionsDateTime = new LinkedList<string>();
         public void DisplayStocks(List<StocksUtility.Stocks> stockList)
         {
             
@@ -110,6 +111,7 @@ namespace StockManagement
         /// <param name="jsonFilePathOfStocks"></param>
         public void BuyStocks(string jsonFilePathOfStocks)
         {
+            DateTime aDate = DateTime.Now;
             string transactions = string.Empty;
             StocksUtility utilityOfStockList = JsonConvert.DeserializeObject<StocksUtility>(File.ReadAllText(jsonFilePathOfStocks));
             
@@ -160,6 +162,7 @@ namespace StockManagement
                 Console.WriteLine("********Congratulations*************");
                 transactions = $"{nameOfPerson} ---> Transaction Done on Buying {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ";
                 transactionsDone.AddLast(transactions);
+                transactionsDateTime.AddLast(transactions+ "at " + aDate.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
                 Console.WriteLine($"{nameOfPerson} Succesfully purchased {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ");
 
 
@@ -178,6 +181,7 @@ namespace StockManagement
        /// <param name="jsonFilePathOfStocks"></param>
         public void SellStocks(string jsonFilePathOfStocks)
         {
+            DateTime aDate = DateTime.Now;
             string transactions = string.Empty;
             StocksUtility utilityOfStockList = JsonConvert.DeserializeObject<StocksUtility>(File.ReadAllText(jsonFilePathOfStocks));
 
@@ -231,6 +235,7 @@ namespace StockManagement
                 Console.WriteLine("********Congratulations*************");
                 transactions = $"{nameOfPerson} --->Transaction Done on Selling {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ";
                 Console.WriteLine($"{nameOfPerson} Succesfully sold {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ");
+                transactionsDateTime.AddLast(transactions +"at "+ aDate.ToString("dddd, dd MMMM yyyy HH:mm:ss"));
                 transactionsDone.AddLast(transactions);
 
 
@@ -249,7 +254,7 @@ namespace StockManagement
             if (transactionsDone.Count > 0)
             {
                 Console.WriteLine("***************YOUR TRANSACTIONS***************");
-                foreach (string i in transactionsDone)
+                foreach (string i in transactionsDateTime)
                 {
                     Console.WriteLine(i);
                 }
