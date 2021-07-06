@@ -14,6 +14,8 @@ namespace StockManagement
         /// Display stocks in json list
         /// </summary>
         /// <param name="stockList"></param>
+
+        private static LinkedList<string> transactionsDone = new LinkedList<string>();
         public void DisplayStocks(List<StocksUtility.Stocks> stockList)
         {
             
@@ -26,10 +28,10 @@ namespace StockManagement
         public void DisplayStocks(LinkedList<StocksUtility.UserStocks> stockList)
         {
             // StocksUtility.Stocks su = new StocksUtility.Stocks();
-            Console.WriteLine("*********YOUR STOCKS***************");
+            Console.WriteLine("*********USER SHARES STOCKS***************");
             foreach (StocksUtility.UserStocks i in stockList)
             {
-                Console.WriteLine($"Name ={i.name}\nVolume={i.volume}\nPrice={i.price}\n***********");
+                Console.WriteLine($"Shareholder name = {i.shareholder}\nName ={i.name}\nVolume={i.volume}\nPrice={i.price}\n***********");
             }
         }
         /// <summary>
@@ -76,7 +78,7 @@ namespace StockManagement
             Console.WriteLine("***********TOTAL VALUE OF EACH USER STOCK***********");
             foreach (StocksUtility.UserStocks i in stockList)
             {
-                Console.WriteLine($"Name ={i.name}\nVolume={i.volume}\nPrice={i.price}\n**********");
+                Console.WriteLine($"Shareholder name = {i.shareholder}\nName ={i.name}\nVolume={i.volume}\nPrice={i.price}\n**********");
                 Console.WriteLine($"Total value of {i.name} share is {i.volume * i.price}\n");
 
             }
@@ -93,7 +95,7 @@ namespace StockManagement
             // StocksUtility.Stocks su = new StocksUtility.Stocks();
             foreach (StocksUtility.UserStocks i in stockList)
             {
-                Console.WriteLine($"Name ={i.name}\nVolume={i.volume}\nPrice={i.price}\n***********");
+                Console.WriteLine($"Shareholder name = {i.shareholder}\nName ={i.name}\nVolume={i.volume}\nPrice={i.price}\n***********");
                 valueOfEachCompany = i.volume * i.price;
                 Console.WriteLine($"Total value of {i.name} share is {valueOfEachCompany}");
                 totalShareOfCompanies += valueOfEachCompany;
@@ -108,13 +110,15 @@ namespace StockManagement
         /// <param name="jsonFilePathOfStocks"></param>
         public void BuyStocks(string jsonFilePathOfStocks)
         {
-            
+            string transactions = string.Empty;
             StocksUtility utilityOfStockList = JsonConvert.DeserializeObject<StocksUtility>(File.ReadAllText(jsonFilePathOfStocks));
             
             
             //*************************************************************************************************
             DisplayStocks(utilityOfStockList.stockList);
-            DisplayStocks(utilityOfStockList.userStockList);
+            //DisplayStocks(utilityOfStockList.userStockList);
+            Console.WriteLine("Enter your name:");
+            string nameOfPerson = Console.ReadLine();
             Console.WriteLine("Enter the name of the stock you want to buy:");
             string name = Console.ReadLine();
             Console.WriteLine("Enter how many volumes you want to buy:");
@@ -130,15 +134,18 @@ namespace StockManagement
                 user.name = name;
                 user.volume = volume;
                 user.price = result.price;
-                if(CheckExists(utilityOfStockList.userStockList,user.name))
+                user.shareholder = nameOfPerson;
+                if(CheckExists(utilityOfStockList.userStockList,user.name, user.shareholder))
                 {
                     //StocksUtility.UserStocks res = utilityOfStockList.userStockList.Find(item => item.name.Equals(user.name));
                     foreach (StocksUtility.UserStocks i in utilityOfStockList.userStockList)
                     {
-                        if (i.name.Equals(name) && i.volume >= volume)
+                        if (i.name.Equals(name) && i.volume >= volume && i.shareholder.Equals(nameOfPerson))
                         {
                             i.volume += user.volume;
-                            
+                            //Console.WriteLine(i.volume);
+                            //Console.WriteLine("stock updated");
+
                         }
                     }
                     
@@ -146,11 +153,14 @@ namespace StockManagement
                 else
                 {
                     utilityOfStockList.userStockList.AddLast(user);
+                    //Console.WriteLine("stock added");
                 }
 
                 File.WriteAllText(jsonFilePathOfStocks, JsonConvert.SerializeObject(utilityOfStockList));
                 Console.WriteLine("********Congratulations*************");
-                Console.WriteLine($"You Purchased {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ");
+                transactions = $"{nameOfPerson} ---> Transaction Done on Buying {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ";
+                transactionsDone.AddLast(transactions);
+                Console.WriteLine($"{nameOfPerson} Succesfully purchased {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ");
 
 
             }
@@ -168,24 +178,34 @@ namespace StockManagement
        /// <param name="jsonFilePathOfStocks"></param>
         public void SellStocks(string jsonFilePathOfStocks)
         {
-
+            string transactions = string.Empty;
             StocksUtility utilityOfStockList = JsonConvert.DeserializeObject<StocksUtility>(File.ReadAllText(jsonFilePathOfStocks));
 
-           
+
             //*************************************************************************************************
-            DisplayStocks(utilityOfStockList.userStockList);
+            //DisplayStocks(utilityOfStockList.userStockList);
+            Console.WriteLine("Enter your name:");
+            string nameOfPerson = Console.ReadLine();
+            Console.WriteLine("\n******Your Shares*******\n");
+            foreach(StocksUtility.UserStocks i in utilityOfStockList.userStockList)
+            {
+                if (i.shareholder.Equals(nameOfPerson))
+                {
+                    Console.WriteLine($"Shareholder name = {i.shareholder}\nName ={i.name}\nVolume={i.volume}\nPrice={i.price}\n***********");
+                }
+            }
             Console.WriteLine("Enter the name of the stock you want to Sell:");
             string name = Console.ReadLine();
             Console.WriteLine("Enter how many volumes you want to Sell:");
             int volume = Convert.ToInt32(Console.ReadLine());
-            bool check = CheckAvailablity(name, volume, utilityOfStockList.userStockList);
+            bool check = CheckAvailablity(name, volume, utilityOfStockList.userStockList,nameOfPerson);
             if (check)
             {
                 StocksUtility.Stocks user = new StocksUtility.Stocks();
                 //StocksUtility.UserStocks result = utilityOfStockList.userStockList.Find(item => item.name.Equals(name));
                 foreach (StocksUtility.UserStocks i in utilityOfStockList.userStockList)
                 {
-                    if (i.name.Equals(name) && i.volume >= volume)
+                    if (i.name.Equals(name) && i.volume >= volume && i.shareholder.Equals(nameOfPerson))
                     {
                         i.volume -= volume;
                         user.price = i.price;
@@ -209,7 +229,9 @@ namespace StockManagement
 
                 File.WriteAllText(jsonFilePathOfStocks, JsonConvert.SerializeObject(utilityOfStockList));
                 Console.WriteLine("********Congratulations*************");
-                Console.WriteLine($"You Sold {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ");
+                transactions = $"{nameOfPerson} --->Transaction Done on Selling {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ";
+                Console.WriteLine($"{nameOfPerson} Succesfully sold {user.name} of volume = {user.volume} , worth = {user.volume * user.price} ");
+                transactionsDone.AddLast(transactions);
 
 
             }
@@ -219,6 +241,23 @@ namespace StockManagement
             }
 
 
+        }
+        //******************************Print transactions done**************
+        public void PrintReport()
+        {
+           
+            if (transactionsDone.Count > 0)
+            {
+                Console.WriteLine("***************YOUR TRANSACTIONS***************");
+                foreach (string i in transactionsDone)
+                {
+                    Console.WriteLine(i);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No transactions Done!!!!!!!!!!!!!");
+            }
         }
 
         //***********************CHECK AVAILABLITY OF STOCKS IN STOCK MARKET*******************
@@ -249,12 +288,12 @@ namespace StockManagement
         /// <param name="volumeOfStock"></param>
         /// <param name="stockList"></param>
         /// <returns></returns>
-        public bool CheckAvailablity(string nameOfStock, int volumeOfStock, LinkedList<StocksUtility.UserStocks> stockList)
+        public bool CheckAvailablity(string nameOfStock, int volumeOfStock, LinkedList<StocksUtility.UserStocks> stockList,string nameOfPerson)
         {
             //StocksUtility.UserStocks result = stockList.Find(item => item.name.Equals(nameOfStock));
             foreach(StocksUtility.UserStocks i in stockList)
             {
-                if (i.name.Equals(nameOfStock) && i.volume >= volumeOfStock)
+                if (i.name.Equals(nameOfStock) && i.volume >= volumeOfStock &&  i.shareholder.Equals(nameOfPerson))
                 {
                     return true;
                 }
@@ -268,11 +307,11 @@ namespace StockManagement
         /// <param name="stockList"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public bool CheckExists(LinkedList<StocksUtility.UserStocks> stockList,string name)
+        public bool CheckExists(LinkedList<StocksUtility.UserStocks> stockList,string name,string nameOfPerson)
         {
             foreach (StocksUtility.UserStocks i in stockList)
             {
-                if (i.name.Equals(name))
+                if (i.name.Equals(name) && i.shareholder.Equals(nameOfPerson) )
                 {
                     return true;
                 }

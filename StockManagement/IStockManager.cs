@@ -16,10 +16,11 @@ namespace StockManagement
         public void BuyStocks(string jsonFilePathOfStocks);
         public void SellStocks(string jsonFilePathOfStocks);
         public bool CheckAvailablity(string nameOfStock, int volumeOfStock, List<StocksUtility.Stocks> stockList);
-        public bool CheckAvailablity(string nameOfStock, int volumeOfStock, LinkedList<StocksUtility.UserStocks> stockList);
-        public bool CheckExists(LinkedList<StocksUtility.UserStocks> stockList, string name);
+        public bool CheckAvailablity(string nameOfStock, int volumeOfStock, LinkedList<StocksUtility.UserStocks> stockList, string nameOfPerson);
+        public bool CheckExists(LinkedList<StocksUtility.UserStocks> stockList, string name,string nameOfPerson);
         public bool CheckExists(List<StocksUtility.Stocks> stockList, string name);
         public void CalculateValueOfAllStocks(List<StocksUtility.UserStocks> stockList);
         public void CalculateValueOfEachStock(List<StocksUtility.UserStocks> stockList);
+        public void PrintReport();
     }
 }

@@ -23,6 +23,7 @@ namespace StockManagement
 
         public class UserStocks
         {
+            public string shareholder { get; set;}
             public string name { get; set; }
             public int volume { get; set; }
             public int price { get; set; }
